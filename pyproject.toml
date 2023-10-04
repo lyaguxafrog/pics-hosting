@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "pics-hosting"
+version = "0.1.0"
+description = "Хостинг для картинок телеграм"
+authors = ["Adrian Makridenko <github.com/lyaguxafrog>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "pics_hosting"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
