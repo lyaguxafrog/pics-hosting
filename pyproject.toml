@@ -9,6 +9,7 @@ packages = [{include = "pics_hosting"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+flask = "^3.0.0"
 
 
 [build-system]
