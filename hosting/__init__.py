@@ -4,4 +4,4 @@ from flask import Flask
 
 app = Flask(__name__)
 
-from hosting import admin
+from hosting import admin, route
