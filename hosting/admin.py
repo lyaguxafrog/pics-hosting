@@ -8,15 +8,18 @@ from flask_admin.contrib.sqla import ModelView
 import os
 from dotenv import load_dotenv, find_dotenv
 
-from hosting import app
-from hosting.models.db import db
+load_dotenv(find_dotenv())
 
-from hosting.models import User, UserAdmin
+from hosting import app
+from hosting.services.db import db
+
+from hosting.models import User, UserAdmin, Bot, BotAdmin
 
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 
 admin = Admin(app)
 admin.add_view(UserAdmin(User, db.session))
+admin.add_view(BotAdmin(Bot, db.session))
 
 

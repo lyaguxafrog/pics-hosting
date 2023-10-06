@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from flask import redirect
 
 from hosting import app
 
 @app.route('/')
 def index():
-    return '<a href="/admin/">Click me to get to Admin!</a>'
+    return redirect('/admin')

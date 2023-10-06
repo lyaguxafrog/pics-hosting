@@ -2,7 +2,7 @@
 
 from flask_admin.contrib.sqla import ModelView
 
-from hosting.models.db import db
+from hosting.services.db import db
 
 class User(db.Model):
     """ Класс описывающий пользователя """
@@ -16,6 +16,7 @@ class User(db.Model):
 
 
 class UserAdmin(ModelView):
+    """ Класс описывающий поведение User в админке """
     column_list = ('telegram_id', 'is_prem', 'reg_date', 'pics_count', 'last_login', 'comment')
     column_searchable_list = ('telegram_id',) 
     column_filters = ('is_prem',)
