@@ -4,7 +4,7 @@
 # from hosting.services.logs import logging
 
 from hosting import app
-from hosting.services.db import db
+from hosting import db
 
 import time
 import os

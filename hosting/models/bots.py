@@ -2,7 +2,7 @@
 
 from flask_admin.contrib.sqla import ModelView
 
-from hosting.services.db import db
+from hosting import db
 
 class Bot(db.Model):
     """ Класс описывающий бота """

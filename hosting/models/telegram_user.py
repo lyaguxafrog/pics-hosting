@@ -2,9 +2,9 @@
 
 from flask_admin.contrib.sqla import ModelView
 
-from hosting.services.db import db
+from hosting import db
 
-class User(db.Model):
+class TelegramUser(db.Model):
     """ Класс описывающий пользователя """
     telegram_id = db.Column(db.Integer, primary_key=True)
     reg_date = db.Column(db.Date)
@@ -15,8 +15,8 @@ class User(db.Model):
     comment = db.Column(db.Text)
 
 
-class UserAdmin(ModelView):
-    """ Класс описывающий поведение User в админке """
+class TelegramUserAdmin(ModelView):
+    """ Класс описывающий поведение TelegramUser в админке """
     column_list = ('telegram_id', 'is_prem', 'reg_date', 'pics_count', 'last_login', 'comment')
     column_searchable_list = ('telegram_id',) 
     column_filters = ('is_prem',)
