@@ -6,6 +6,7 @@ from hosting import db
 
 class Bot(db.Model):
     """ Класс описывающий бота """
+    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     bot_token = db.Column(db.String)
@@ -15,6 +16,7 @@ class Bot(db.Model):
 
 class BotAdmin(ModelView):
     """ Класс описывающий поведение Bot в админке """
+
     column_list = ('id', 'name', 'bot_token', 'comment', 'is_active')
     column_searchable_list = ('id', 'name')
     column_filters = ('is_active',)

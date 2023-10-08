@@ -16,7 +16,7 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('admin'))
+        return redirect(url_for('admin.index'))
 
     if request.method == 'POST':
         username = request.form['username']
@@ -30,3 +30,11 @@ def login():
             flash('Неправильное имя пользователя или пароль', 'error')
 
     return render_template('login.html')
+
+
+@app.route('/logout')
+@login_required 
+def logout():
+    logout_user()  
+    flash('Вы успешно вышли из системы.', 'success') 
+    return redirect(url_for('login')) 
