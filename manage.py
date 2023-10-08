@@ -18,6 +18,9 @@ load_dotenv(find_dotenv())
 if len(sys.argv) > 1 and sys.argv[1] == 'sql':
     import hosting.services.sql_tools
 
+elif len(sys.argv) > 1 and sys.argv[1] == 'su':
+    import hosting.services.create_user
+
 else:
     if __name__ == '__main__':
         with app.app_context():
