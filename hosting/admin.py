@@ -19,9 +19,10 @@ from hosting import db
 from hosting import login_manager
 
 from hosting.models import (TelegramUser, 
-                        TelegramUserAdmin, Bot, BotAdmin, Admins, AdminsAdmin)
+                        TelegramUserAdmin, Bot, 
+                        BotAdmin, Admins, AdminsAdmin, Pictures, PicturesAdmin)
 
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+
 
 
 @login_manager.user_loader
@@ -35,6 +36,7 @@ class MyAdminIndexView(AdminIndexView):
 admin = Admin(app, index_view=MyAdminIndexView())
 admin.add_view(AdminsAdmin(Admins, db.session))
 admin.add_view(TelegramUserAdmin(TelegramUser, db.session))
+admin.add_view(PicturesAdmin(Pictures, db.session))
 admin.add_view(BotAdmin(Bot, db.session))
 
 
