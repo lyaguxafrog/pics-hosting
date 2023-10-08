@@ -2,7 +2,9 @@
 
 from flask import Flask
 
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView
+from flask_login import current_user
+
 
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -14,15 +16,25 @@ load_dotenv(find_dotenv())
 
 from hosting import app
 from hosting import db
+from hosting import login_manager
 
-from hosting.models import (TelegramUser, TelegramUserAdmin, Bot, BotAdmin)
-
+from hosting.models import (TelegramUser, TelegramUserAdmin, Bot, BotAdmin, Admins)
 
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 
-admin = Admin(app)
+@login_manager.user_loader
+def load_user(user_id):
+    return Admins.query.get(int(user_id))
+
+class MyAdminIndexView(AdminIndexView):
+    def is_accessible(self):
+        return current_user.is_authenticated  
+
+admin = Admin(app, index_view=MyAdminIndexView())
 admin.add_view(TelegramUserAdmin(TelegramUser, db.session))
 admin.add_view(BotAdmin(Bot, db.session))
 
 
+
+login_manager.init_app(app)
