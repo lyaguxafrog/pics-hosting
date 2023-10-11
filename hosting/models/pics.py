@@ -21,9 +21,9 @@ class Pictures(db.Model):
 class PicturesAdmin(ModelView):
     """ Класс описывающий поведение Pictures в админке """
 
-    column_list = ('id', 'name', 'pic_data', 'owner_id', 'password', 'is_one_view', 'view')
+    column_list = ('id', 'name', 'pic_data', 'pic_upload', 'owner_id', 'password', 'is_one_view', 'view')
     column_searchable_list = ('id', 'name', 'owner_id')
-    form_columns = ('name', 'pic_data', 'owner_id', 'password', 'is_one_view')
+    form_columns = ('name', 'pic_data', 'pic_upload', 'owner_id', 'password', 'is_one_view')
 
     form_extra_fields = {
         'pic_upload': FileUploadField('Image', base_path='static/img', allow_overwrite=True)
@@ -31,4 +31,5 @@ class PicturesAdmin(ModelView):
 
     def on_model_change(self, form, model, is_created):
         if form.pic_upload.data:
+            # Сохраните данные изображения в поле pic_data
             model.pic_data = form.pic_upload.data.read()
