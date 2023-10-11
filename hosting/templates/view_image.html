@@ -1,0 +1,7 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+    <h2>View Image</h2>
+    <img src="{{ url_for('static', filename='static/img/' + picture.name) }}" alt="{{ picture.name }}">
+    <a href="{{ url_for('.index_view') }}">Back to List</a>
+{% endblock %}

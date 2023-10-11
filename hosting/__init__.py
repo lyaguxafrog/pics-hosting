@@ -13,6 +13,7 @@ load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 
+
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 login_manager = LoginManager(app)
@@ -23,4 +24,5 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 db = SQLAlchemy(app)
 
 
+from hosting.bot_kernel import bot
 from hosting import admin, route

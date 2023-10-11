@@ -9,9 +9,9 @@ class TelegramUser(db.Model):
     telegram_id = db.Column(db.Integer, primary_key=True)
     reg_date = db.Column(db.Date)
     last_login = db.Column(db.Date)
-    is_prem = db.Column(db.Boolean)
+    is_prem = db.Column(db.Boolean,default=False)
     pics_count = db.Column(db.Integer)
-    is_banned = db.Column(db.Boolean)
+    is_banned = db.Column(db.Boolean, default=False)
     comment = db.Column(db.Text)
 
 

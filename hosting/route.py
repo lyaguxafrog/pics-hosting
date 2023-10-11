@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
 
-from flask import render_template, redirect, url_for, flash, request, redirect
+from flask import (render_template,
+            redirect, url_for, flash, request, redirect, send_file)
 
 from flask_login import login_user, login_required, logout_user, current_user
 
 from hosting import app
-from hosting.models import Admins
+from hosting.models import Admins, Pictures
+
+import io
 
 @app.route('/')
 def index():
@@ -38,3 +41,16 @@ def logout():
     logout_user()  
     flash('Вы успешно вышли из системы.', 'success') 
     return redirect(url_for('login')) 
+
+
+@app.route('/view-image/<int:id>/', methods=['GET'])
+def view_image(id):
+    picture = Pictures.query.get(id)
+    if picture:
+        response = send_file(
+            io.BytesIO(picture.pic_data),
+            mimetype='image/jpg',  # Замените на соответствующий MIME-тип
+            as_attachment=False  # Изменено с as_attachment=True
+        )
+        return response
+    return "Image not found", 404

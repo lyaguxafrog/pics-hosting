@@ -22,6 +22,8 @@ flask-script = "^2.0.6"
 pyotp = "^2.9.0"
 pytelegrambotapi = "^4.14.0"
 pillow = "^10.0.1"
+flask-images = "^3.0.2"
+apscheduler = "^3.10.4"
 
 
 [build-system]
