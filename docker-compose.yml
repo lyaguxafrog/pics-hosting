@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: developer
+      POSTGRES_PASSWORD: Passw0rd33
+    volumes:
+      - ./db:/var/lib/postgresql/data
+
+
+
+
+  bot:
+    build: ./bot
+    volumes: 
+      - ./bot:/app
+    env_file:
+      - ./bot/.env
+    depends_on:
+      - db
+
+  kernel:
+    build: ./kernel
+    volumes:
+      - ./kernel:/app
+    env_file:
+      - ./kernel/.env
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      

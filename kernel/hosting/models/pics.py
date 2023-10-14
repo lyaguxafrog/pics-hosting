@@ -21,6 +21,7 @@ def random_string(length=8):
 class Pictures(db.Model):
     """ Класс описывающий картинки """
     
+    __tablename__ = 'pictures'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     pic_data = db.Column(db.LargeBinary)

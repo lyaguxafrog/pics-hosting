@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# from hosting.services.logs import logging
-
 from hosting import app
 from hosting import db
 
-import time
 import os
 import sys
-import threading
 
 
 from dotenv import load_dotenv, find_dotenv

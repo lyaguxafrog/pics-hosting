@@ -21,9 +21,9 @@ from hosting import app
 from hosting import db
 from hosting import login_manager
 
-from hosting.models import (TelegramUser, 
-                        TelegramUserAdmin, Bot, 
-                        BotAdmin,Admins, AdminsAdmin, 
+from hosting.models import (TelegramUser,
+                        TelegramUserAdmin, Bot,
+                        BotAdmin,Admins, AdminsAdmin,
                         Pictures, PicturesAdmin)
 
 
@@ -33,7 +33,7 @@ def load_user(user_id):
 
 class MyAdminIndexView(AdminIndexView):
     def is_accessible(self):
-        return current_user.is_authenticated  
+        return current_user.is_authenticated
 
 class ImageView(PicturesAdmin):
     @expose('/view-image/<int:id>/')
@@ -49,10 +49,9 @@ class ImageView(PicturesAdmin):
 
 admin = Admin(app, index_view=MyAdminIndexView())
 admin.add_view(AdminsAdmin(Admins, db.session))
-admin.add_view(TelegramUserAdmin(TelegramUser, db.session))
-# admin.add_view(PicturesAdmin(Pictures, db.session, name="Images"))
-admin.add_view(ImageView(Pictures, db.session, name="ImageView"))
-admin.add_view(BotAdmin(Bot, db.session))
+admin.add_view(TelegramUserAdmin(TelegramUser, db.session, name="Users"))
+admin.add_view(ImageView(Pictures, db.session, name="Pictures"))
+admin.add_view(BotAdmin(Bot, db.session, name="Bots"))
 
 
 login_manager.init_app(app)

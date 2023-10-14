@@ -6,7 +6,7 @@ from hosting import db
 
 class Bot(db.Model):
     """ Класс описывающий бота """
-    
+    __tablename__ = 'bot'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     bot_token = db.Column(db.String)

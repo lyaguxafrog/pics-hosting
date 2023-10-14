@@ -6,6 +6,8 @@ from hosting import db
 
 class TelegramUser(db.Model):
     """ Класс описывающий пользователя """
+
+    __tablename__ = 'telegram_user'
     telegram_id = db.Column(db.Integer, primary_key=True)
     reg_date = db.Column(db.Date)
     last_login = db.Column(db.Date)
