@@ -25,18 +25,18 @@ class Admins(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
-    
+
     def generate_otp_secret(self):
         self.otp_secret = pyotp.random_base32()
 
     def verify_otp(self, otp, username):
         totp = pyotp.TOTP(self.otp_secret)
         return totp.verify(otp, username)
-    
+
 class AdminsAdmin(ModelView):
     """ Класс описывающий поведение Bot в админке """
 
     column_list = ('id', 'username', 'is_2FA')
     column_searchable_list = ('id', 'username')
     column_filters = ('username',)
-    form_columns = ('id', 'username', 'is_2FA')
+    form_columns = ('username', 'password', 'is_2FA')

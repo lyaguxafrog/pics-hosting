@@ -20,6 +20,6 @@ class TelegramUser(db.Model):
 class TelegramUserAdmin(ModelView):
     """ Класс описывающий поведение TelegramUser в админке """
     column_list = ('telegram_id', 'is_prem', 'reg_date', 'pics_count', 'last_login', 'comment')
-    column_searchable_list = ('telegram_id',) 
+    column_searchable_list = ('telegram_id',)
     column_filters = ('is_prem',)
-    form_columns = ('telegram_id', 'is_prem', 'reg_date', 'pics_count', 'last_login', 'comment')
+    form_columns = ('telegram_id', 'is_prem', 'reg_date', 'pics_count', 'last_login', 'is_banned', 'comment')

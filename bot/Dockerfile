@@ -7,3 +7,6 @@ RUN pip install --upgrade pip && \
 
 COPY . /app
 WORKDIR /app
+
+COPY ./entrypoint.sh /
+ENTRYPOINT ["bash", "/entrypoint.sh"]

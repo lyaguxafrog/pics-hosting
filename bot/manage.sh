@@ -1,4 +1,4 @@
 #!/bin/bash
 
 
-./bot.py $@
+./dmanage.py $@

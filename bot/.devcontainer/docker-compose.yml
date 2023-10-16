@@ -11,7 +11,8 @@ services:
       POSTGRES_PASSWORD: Passw0rd33
     ports:
       - '5432:5432'
-  kernel:
+      
+  bot:
     user: vscode
     env_file:
       - ../.env
