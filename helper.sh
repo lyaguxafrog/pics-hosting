@@ -17,8 +17,8 @@ if [[ $1 = 'startapp' ]]; then
     echo "Starting..."
     docker-compose up -d --build db
     docker-compose up -d --build kernel
-    # docker-compose up -d --build bot
-
+    docker-compose up -d --build bot
+    docker-compose up -d --build nginx
 
 
 

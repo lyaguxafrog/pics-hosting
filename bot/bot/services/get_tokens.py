@@ -42,4 +42,5 @@ def tokens() -> list:
     except psycopg2.Error as e:
         print("Ошибка при выполнении SQL-запроса:", e)
 
+    print(active_bot_tokens)
     return active_bot_tokens

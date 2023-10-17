@@ -20,8 +20,6 @@ services:
       - ./bot:/app
     env_file:
       - ./bot/.env
-    ports:
-      - "5000:5000"
     depends_on:
       - db
 
@@ -36,3 +34,8 @@ services:
     depends_on:
       - db
       
+  nginx:
+      build: ./nginx
+      ports:
+        - '80:80'
+
