@@ -13,6 +13,7 @@ fi
 
 if [[ $1 = 'pip' ]]; then
     pip install -r requirements.txt
+    cat  requirements.txt >> .devcontainer/requirements.txt
     exit 0
 fi
 
