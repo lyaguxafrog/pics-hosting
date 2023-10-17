@@ -5,9 +5,9 @@ PROJECT=${PWD##*/}
 if [[ $1 = 'config' ]]; then
 
     cat ./kernel/.env.example >> ./kernel/.env
+    cat ./bot./env.example >> ./bot/.env
     echo "Обязательно смените SECRET_KEY"
     echo "Используйте https://djecrety.ir/"
-    cat ./kernel/config/local_settings.example >> ./kernel/config/local_settings.py
 
 fi
 
