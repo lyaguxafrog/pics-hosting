@@ -17,4 +17,10 @@ if [[ $1 = 'pip' ]]; then
     exit 0
 fi
 
+if [[ $1 = 'su_admin' ]]; then
+    ./dmanage.py sa
+    exit 0
+
+fi
+
 ./dmanage.py $@

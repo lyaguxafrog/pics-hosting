@@ -5,10 +5,11 @@ PROJECT=${PWD##*/}
 if [[ $1 = 'config' ]]; then
 
     cat ./kernel/.env.example >> ./kernel/.env
-    cat ./bot./env.example >> ./bot/.env
+    rm -rf README.md
+    cat ./bot/.env.example >> ./bot/.env
+
     echo "Обязательно смените SECRET_KEY"
     echo "Используйте https://djecrety.ir/"
-    rm -rf README.md
 fi
 
 
@@ -19,6 +20,20 @@ if [[ $1 = 'startapp' ]]; then
     docker-compose up -d --build kernel
     docker-compose up -d --build bot
     docker-compose up -d --build nginx
+fi
+
+if [[ $1 = 'new_admin' ]]; then
+
+    docker-compose up -d --build kernel
+    docker exec ${PROJECT}_kernel_1 ./manage.sh
+    docker-compose down
+
+    docker-compose up -d --build kernel
+    docker exec ${PROJECT}_kernel_1 ./manage.sh sa
+    docker-compose down
+
+
+
 fi
 
 if [[ $1 = 'clear' ]]; then

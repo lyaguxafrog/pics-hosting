@@ -11,9 +11,6 @@ services:
     volumes:
       - ./db:/var/lib/postgresql/data
 
-
-
-
   bot:
     build: ./bot
     volumes: 
@@ -30,12 +27,14 @@ services:
     env_file:
       - ./kernel/.env
     ports:
-      - "5000:5000"
+      - "8080:8080"
     depends_on:
       - db
       
   nginx:
-      build: ./nginx
-      ports:
-        - '80:80'
-
+    build: ./nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - kernel
+      - bot
