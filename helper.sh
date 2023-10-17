@@ -8,7 +8,7 @@ if [[ $1 = 'config' ]]; then
     cat ./bot./env.example >> ./bot/.env
     echo "Обязательно смените SECRET_KEY"
     echo "Используйте https://djecrety.ir/"
-
+    rm -rf README.md
 fi
 
 
@@ -19,10 +19,6 @@ if [[ $1 = 'startapp' ]]; then
     docker-compose up -d --build kernel
     docker-compose up -d --build bot
     docker-compose up -d --build nginx
-
-
-
-
 fi
 
 if [[ $1 = 'clear' ]]; then

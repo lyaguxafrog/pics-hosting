@@ -12,7 +12,7 @@ gh repo clone lyaguxafrog/pics-hosting && cd pics-hosting
 
 3. Настройте конфиг:
 ```bash
-/helper.sh config
+./helper.sh config
 ```
 
 **Не забудьте сменить SECRET_KEY в `kernel/.env`!**
