@@ -1,41 +1,57 @@
 import telebot
 import psycopg2
+from multiprocessing import Process
+import time
 
 import os
 from dotenv import load_dotenv, find_dotenv
 
-load_dotenv(find_dotenv())
 
-# Функция для установления соединения с базой данных и получения активных токенов
+# Подключение к базе данных PostgreSQL
+db_connection = psycopg2.connect(
+    host="db",
+    database=os.getenv("POSTGRES_DB"),
+    user=os.getenv("POSTGRES_USER"),
+    password=os.getenv("POSTGRES_PASSWORD")
+)
+
+# Глобальный словарь для хранения процессов ботов
+bot_processes = {}
+
+# Функция для получения списка активных токенов из базы данных
 def get_active_bot_tokens():
-    conn = psycopg2.connect(
-        dbname=os.getenv("POSTGRES_DB"),
-        user=os.getenv("POSTGRES_USER"),
-        password=os.getenv("POSTGRES_PASSWORD"),
-        host="db",
-    )
-    cursor = conn.cursor()
-    cursor.execute("SELECT bot_token FROM bot WHERE is_active = TRUE")
-    active_tokens = [row[0] for row in cursor.fetchall()]
-    conn.close()
-    return active_tokens
+    cursor = db_connection.cursor()
+    cursor.execute("SELECT bot_token FROM bot WHERE is_active = true;")
+    tokens = {row[0] for row in cursor.fetchall()}
+    cursor.close()
+    return tokens
 
-# Создаем ботов на основе активных токенов
-active_tokens = get_active_bot_tokens()
-bots = [telebot.TeleBot(token) for token in active_tokens]
+# Функция, которая будет выполняться для каждого активного бота
+def start_bot(token):
+    bot_instance = telebot.TeleBot(token)
 
-# Функция для обработки команды /start
-def handle_start(message):
-    for bot in bots:
-        bot.send_message(message.chat.id, "Привет, я активен!")
+    @bot_instance.message_handler(func=lambda message: True)
+    def echo_all(message):
+        bot_instance.reply_to(message, message.text)
 
-# Создаем хендлер для команды /start для каждого бота
-for bot in bots:
-    @bot.message_handler(commands=['start'])
-    def start(message):
-        handle_start(message)
+    bot_instance.polling(none_stop=True)
 
 if __name__ == "__main__":
-    for bot in bots:
-        bot.remove_webhook()
-        bot.polling(none_stop=True)
+    while True:
+        active_tokens = get_active_bot_tokens()
+
+        # Останавливаем процессы для токенов, которые стали неактивными
+        for token, process in bot_processes.copy().items():
+            if token not in active_tokens:
+                process.terminate()
+                del bot_processes[token]
+
+        # Запускаем процессы для новых активных токенов
+        for token in active_tokens:
+            if token not in bot_processes:
+                p = Process(target=start_bot, args=(token,))
+                p.start()
+                bot_processes[token] = p
+
+        # Подождать некоторое время перед следующей проверкой базы данных
+        time.sleep(int(os.getenv("UPDATE_TIME")))  # Например, каждые 5 минут (300 секунд)

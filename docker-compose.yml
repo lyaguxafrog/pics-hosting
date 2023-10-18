@@ -12,13 +12,13 @@ services:
       - ./db:/var/lib/postgresql/data
 
   bot:
-    build: ./bot
-    volumes: 
-      - ./bot:/app
-    env_file:
-      - ./bot/.env
-    depends_on:
-      - db
+      build: ./bot
+      volumes: 
+        - ./bot:/app
+      env_file:
+        - ./bot/.env
+      depends_on:
+        - db
 
   kernel:
     build: ./kernel
