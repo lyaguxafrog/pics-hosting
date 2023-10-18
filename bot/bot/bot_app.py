@@ -13,7 +13,7 @@ from bot.services.saveimage import save_image
 import psycopg2
 from psycopg2 import sql
 from io import BytesIO
-from psycopg2.extensions import LO_WRONLY
+
 
 # Функция для получения списка активных токенов из базы данных
 tokens = get_active_bot_tokens(db_connection=db())
@@ -33,7 +33,7 @@ def save_image(user_id, name, password, image_data):
         image_oid = cursor.fetchone()[0]
 
         # Откройте Large Object для записи
-        cursor.execute(sql.SQL("SELECT lo_open(%s, %s)"), (image_oid, LO_WRONLY))
+        cursor.execute(sql.SQL("SELECT lo_open(%s, %s)"), (image_oid, psycopg2.extensions.LO_WRONLY))
         image_file = cursor.fetchone()[0]
 
         # Запишите данные изображения в Large Object
