@@ -2,6 +2,8 @@
 
 from flask import Flask
 
+from flask_bootstrap import Bootstrap
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
@@ -13,6 +15,7 @@ load_dotenv(find_dotenv())
 
 
 app = Flask(__name__)
+bootstrap = Bootstrap(app)
 
 
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")

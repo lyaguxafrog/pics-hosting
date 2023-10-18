@@ -22,6 +22,7 @@ def login():
 
         if user and user.check_password(password):
             if user.is_2FA:
+                login_user(user)
                 return redirect(url_for('otp_login'))
             login_user(user)
             return redirect(url_for('admin.index'))
@@ -50,12 +51,14 @@ def view_image(id):
         return response
     return "Image not found", 404
 
+
 @app.route('/otp_login', methods=['GET', 'POST'])
 @login_required
 def otp_login():
     if request.method == 'POST':
         otp = request.form['otp']
         user = Admins.query.get(current_user.id)
+        logout_user()
 
         if user and user.verify_otp(otp):
             login_user(user)

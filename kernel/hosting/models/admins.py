@@ -1,12 +1,21 @@
+# -*- coding: utf-8 -*-
+
 from flask import request
+
+
 from flask_admin.contrib.sqla import ModelView
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from flask_wtf import FlaskForm
+
+
 from wtforms import PasswordField, BooleanField, StringField
 from wtforms.validators import InputRequired
 from werkzeug.security import check_password_hash, generate_password_hash
+
+
 import pyotp
+
 
 from hosting import db
 
