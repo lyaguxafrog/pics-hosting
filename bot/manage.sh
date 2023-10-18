@@ -1,4 +1,9 @@
 #!/bin/bash
 
 
-python bot/bot_app.py
+if [[ $1 == 'access' ]]; then
+    sudo chown -R vscode .
+    exit 0
+fi
+
+python dmanage.py
