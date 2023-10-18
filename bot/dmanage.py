@@ -32,4 +32,4 @@ if __name__ == "__main__":
                 bot_processes[token] = p
 
         # Подождать некоторое время перед следующей проверкой базы данных
-        time.sleep(int(os.getenv("UPDATE_TIME")))  # Например, каждые 5 минут (300 секунд)
+        time.sleep(int(os.getenv("UPDATE_TIME")))
