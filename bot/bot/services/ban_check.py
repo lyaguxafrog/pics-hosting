@@ -17,12 +17,9 @@ def check_ban(user_id: str) -> bool:
     :return: True - бан / False - не бан
     """
 
-    cur.execute("SELECT is_banned FROM telegram_users WHERE telegram_id = %s", (user_id,))
+    cur.execute("SELECT is_banned FROM telegram_user WHERE telegram_id = %s", (user_id,))
     result = cur.fetchone()
 
-
-    cur.close()
-    con.close()
 
     if result is not None and result[0] is True:
         return True

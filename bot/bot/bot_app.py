@@ -9,14 +9,11 @@ from bot.services.get_tokens import get_active_bot_tokens
 from bot.services.db_connection import db
 
 from bot.commands.start import handler_start
-
-# Функция для получения списка активных токенов из базы данных
-tokens = get_active_bot_tokens(db_connection=db())
+from bot.commands.new_image import handler_new_image, get_pic
 
 
 conn = db()
 cursor = conn.cursor()
-
 
 
 user_data = {}
@@ -25,9 +22,16 @@ user_data = {}
 def start_bot(token):
     bot = telebot.TeleBot(token)
 
-    @bot.message_handler(commands=['start'])
+    @bot.message_handler(commands=['start', 'help'])
     def start(mesage):
         handler_start(mesage, bot)
+
+
+    @bot.message_handler(commands=['new_image'])
+    def new_image(message):
+        handler_new_image(message, bot)
+        get_pic(message, bot)
+
 
     # Запускаем бот
     bot.remove_webhook()

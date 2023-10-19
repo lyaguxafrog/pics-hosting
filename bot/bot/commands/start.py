@@ -33,7 +33,7 @@ def handler_start(message, bot):
 
         else:
 
-            cur.execute(f"UPDATE telehram_user (last_login) WHERE telegram_id='{telegram_id}' VALUES ({reg_date})")
+            cur.execute(f"UPDATE telegram_user SET last_login = %s WHERE telegram_id = %s", (reg_date, telegram_id))
             bot.send_message(telegram_id, "Команды:\n/help - это сообщение\n/new_image - отправить сообщение\n/my_images - мои сообщения")
 
 
