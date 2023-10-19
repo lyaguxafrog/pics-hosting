@@ -1,20 +1,20 @@
 
-from bot.services.dbconnect import db
+import os
 
-datebase = db()
-db_cursor = datebase.cursor()
+def save_image(user_id, image_name, file_path, image_password):
+    # Создаем папку imgs/ для хранения изображений, если она не существует
+    if not os.path.exists("imgs"):
+        os.makedirs("imgs")
 
-def save_image(user_id, name, password, pic_data):
-    try:
-        # Начать новую транзакцию
-        datebase.commit()
+    # Генерируем уникальное имя файла, основанное на идентификаторе пользователя и имени изображения
+    unique_filename = f"{user_id}_{image_name}.jpg"
 
-        # Вставить данные изображения в таблицу
-        db_cursor.execute("INSERT INTO pictures (name, pic_data, owner_id, password) VALUES (%s, %s, %s::character varying, %s::character varying)", (name, pic_data, str(user_id), password))
+    # Сохраняем изображение в папку imgs/ с уникальным именем
+    with open(os.path.join("imgs", unique_filename), "wb") as img_file:
+        with open(file_path, "rb") as original_file:
+            img_file.write(original_file.read())
 
-        # Завершить транзакцию
-        datebase.commit()
-    except Exception as e:
-        # Если произошла ошибка, откатить транзакцию
-        datebase.rollback()
-        print(f"Error: {e}")
+    if image_password:
+        # Если у изображения есть пароль, сохраняем его в отдельный файл
+        with open(os.path.join("imgs", f"{unique_filename}.password"), "w") as password_file:
+            password_file.write(image_password)
