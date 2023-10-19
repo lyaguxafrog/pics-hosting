@@ -3,6 +3,7 @@ import telebot
 import psycopg2
 from PIL import Image
 import io
+import os
 from multiprocessing import Process
 from datetime import datetime
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -46,83 +47,76 @@ def start_bot(token):
     @bot_instance.message_handler(commands=['sendimage'])
     def handle_sendimage(message):
         user_id = message.from_user.id
-        bot_instance.send_message(user_id, "Введите имя для изображения:")
-        bot_instance.register_next_step_handler(message, process_image_name)
+        bot_instance.send_message(user_id, "Отправьте изображение в виде файла (или /cancel для отмены):")
+        bot_instance.register_next_step_handler(message, process_image_data, user_id)
 
-    def process_image_name(message):
-        user_id = message.from_user.id
+    def process_image_data(message, user_id):
+        if message.text and message.text.lower() == "/cancel":
+            bot_instance.send_message(user_id, "Отправка изображения отменена.")
+            return
+        elif message.photo:
+            bot_instance.send_message(user_id, "Пожалуйста, отправьте изображение в виде файла.")
+        elif message.document:
+            # Обработка прикрепленного документа (файла)
+            file_info = bot_instance.get_file(message.document.file_id)
+            file_path = file_info.file_path
+
+            bot_instance.send_message(user_id, "Введите имя для изображения:")
+            bot_instance.register_next_step_handler(message, process_image_name, user_id, file_path)
+        else:
+            bot_instance.send_message(user_id, "Пожалуйста, отправьте изображение в виде файла.")
+
+    def process_image_name(message, user_id, file_path):
         image_name = message.text
         bot_instance.send_message(user_id, "Нужен ли пароль для изображения? (Да/Нет)")
-        bot_instance.register_next_step_handler(message, process_password, user_id, image_name)
+        bot_instance.register_next_step_handler(message, process_password, user_id, file_path, image_name)
 
-    def process_password(message, user_id, image_name):
+    def process_password(message, user_id, file_path, image_name):
         password_needed = message.text.lower()
         if password_needed == "да":
             bot_instance.send_message(user_id, "Введите пароль для изображения:")
-            bot_instance.register_next_step_handler(message, process_image_password, user_id, image_name)
+            bot_instance.register_next_step_handler(message, process_image_password, user_id, file_path, image_name)
         elif password_needed == "нет":
-            bot_instance.send_message(user_id, "Отправьте изображение:")
-            bot_instance.register_next_step_handler(message, process_image_data, user_id, image_name, None)
+            save_image_to_database(user_id, image_name, file_path, None)
+            bot_instance.send_message(user_id, "Изображение сохранено в базе данных.")
         else:
             bot_instance.send_message(user_id, "Пожалуйста, ответьте 'Да' или 'Нет'.")
 
-    def process_image_password(message, user_id, image_name):
+    def process_image_password(message, user_id, file_path, image_name):
         image_password = message.text
-        bot_instance.send_message(user_id, "Отправьте изображение:")
-        bot_instance.register_next_step_handler(message, process_image_data, user_id, image_name, image_password)
-
-    def process_image_data(message, user_id, image_name, image_password):
-        if message.photo:
-            file_info = bot_instance.get_file(message.photo[0].file_id)
-            file_path = file_info.file_path
-            image_data = bot_instance.download_file(file_path)
-
-            # Сохранить изображение в базе данных
-            image_data = io.BytesIO(image_data)
-            image = Image.open(image_data)
-            image_format = "PNG"  # Используем формат PNG
-            image.save(image_data, format=image_format)
-
-            image_data.seek(0)  # Сбросить указатель потока
-
-            # Сохранить изображение в базе данных
-            save_image(user_id, image_name, image_password, image_data.read())
-            bot_instance.send_message(user_id, "Изображение сохранено в базе данных.")
-        else:
-            bot_instance.send_message(user_id, "Пожалуйста, отправьте изображение.")
+        save_image_to_database(user_id, image_name, file_path, image_password)
+        bot_instance.send_message(user_id, "Изображение сохранено в базе данных.")
 
 
+    def save_image_to_database(user_id, image_name, file_path, image_password):
+        conn = db()
+
+        cursor = conn.cursor()
+
+        # Определяем SQL-запрос для вставки данных об изображении
+        insert_query = """
+            INSERT INTO pictures (name, pic_data, file_path, owner_id, password, is_one_view, view)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+
+        # Выполняем SQL-запрос
+        cursor.execute(insert_query, (image_name, None, file_path, user_id, image_password, False, 0))
+
+        # Фиксируем изменения
+        conn.commit()
+
+        # Закрываем соединение
+        cursor.close()
+        conn.close()
 
 
-    @bot_instance.message_handler(commands=['viewimages'])
-    def handle_viewimages(message):
+    @bot_instance.message_handler(commands=['cancel'])
+    def handle_cancel(message):
         user_id = message.from_user.id
-        db_cursor.execute("SELECT id, name FROM pictures WHERE owner_id = %s", (str(user_id),))
-        saved_images = db_cursor.fetchall()
+        bot_instance.send_message(user_id, "Отправка изображения отменена.")
 
-        if saved_images:
-            markup = InlineKeyboardMarkup(row_width=2)
 
-            for image_id, image_name in saved_images:
-                button = InlineKeyboardButton(image_name, callback_data=f"view_{image_id}")
-                markup.add(button)
 
-            bot_instance.send_message(user_id, "Выберите изображение для просмотра:", reply_markup=markup)
-        else:
-            bot_instance.send_message(user_id, "У вас нет сохраненных изображений.")
-
-    @bot_instance.callback_query_handler(func=lambda call: call.data.startswith("view_"))
-    def callback_view_image(call):
-        user_id = call.from_user.id
-        image_id = call.data.split("_")[1]
-
-        db_cursor.execute("SELECT pic_data FROM pictures WHERE id = %s AND owner_id = %s", (image_id, str(user_id)))
-        image_data = db_cursor.fetchone()
-
-        if image_data:
-            bot_instance.send_photo(user_id, image_data[0])
-        else:
-            bot_instance.send_message(user_id, "Изображение не найдено.")
 
     bot_instance.remove_webhook()
     bot_instance.polling(none_stop=True)

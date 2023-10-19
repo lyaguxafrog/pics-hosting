@@ -25,6 +25,7 @@ class Pictures(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     pic_data = db.Column(db.LargeBinary)
+    file_path = db.Column(db.String)
     owner_id = db.Column(db.String)
     password = db.Column(db.String)
     is_one_view = db.Column(db.Boolean)
