@@ -30,6 +30,7 @@ class Pictures(db.Model):
     password = db.Column(db.String)
     is_one_view = db.Column(db.Boolean)
     view = db.Column(db.Integer, default=0)
+    link_code = db.Column(db.Integer)
 
 class PicturesAdmin(ModelView):
     """ Класс описывающий поведение Pictures в админке """

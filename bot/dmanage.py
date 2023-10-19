@@ -8,7 +8,7 @@ from multiprocessing import Process
 
 from bot.services.get_tokens import get_active_bot_tokens
 from bot.bot_app import start_bot
-from bot.services.dbconnect import db
+from bot.services.db_connection import db
 
 load_dotenv(find_dotenv())
 
